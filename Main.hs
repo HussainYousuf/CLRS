@@ -1,7 +1,7 @@
 module Main where
 
 import Data.List (elemIndex)
-import Data.Maybe (fromJust)
+import Data.Maybe (isJust)
 
 main :: IO ()
 main = putStrLn "Hello, Haskell!"
@@ -12,8 +12,7 @@ insert x [] = [x]
 insert x (y : ys) = if x <= y then x : y : ys else y : insert x ys
 
 insertionSort :: Ord a => [a] -> [a]
-insertionSort [] = []
-insertionSort (x : xs) = insert x $ insertionSort xs
+insertionSort = foldr insert []
 
 -- mergeSort
 merge :: Ord a => [a] -> [a] -> [a]
@@ -49,11 +48,11 @@ binarySearch' y xs orig
     | otherwise = binarySearch' y right orig
   where
     mid = length xs `div` 2
-    (left, (x : right)) = splitAt mid xs
+    (left, x : right) = splitAt mid xs
 
 -- 2.3.7
 e2_3_7 :: (Num a, Ord a) => a -> [a] -> Maybe (a, a)
-e2_3_7 t xs = foldr (\a b -> if a /= Nothing then a else b) Nothing $ f xs'
+e2_3_7 t xs = foldr (\a b -> if isJust a then a else b) Nothing $ f xs'
   where
     xs' = mergeSort xs
     f [] = []
@@ -66,7 +65,7 @@ e2_3_7 t xs = foldr (\a b -> if a /= Nothing then a else b) Nothing $ f xs'
         | otherwise = binarySearch'' y left
       where
         mid = length xs `div` 2
-        (left, (x : right)) = splitAt mid xs
+        (left, x : right) = splitAt mid xs
 
 maxSubArray :: (Num a, Ord a) => [a] -> [a]
 maxSubArray xs = maxSubArray' xs [] [] 0 0
