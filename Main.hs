@@ -7,9 +7,10 @@ module Main where
 import Data.List (elemIndex, foldl')
 import Data.Maybe (isJust)
 import Text.RawString.QQ (r)
+import qualified Lib 
 
 main :: IO ()
-main = putStrLn "Hello, Haskell!"
+main = Lib.main
 
 -- insertionSort
 insertionSort :: Ord a => [a] -> [a]
@@ -189,3 +190,6 @@ isBalanced = null . foldl' op []
     | otherwise = xs
 
 str = [r| [{ "name": "John", "age": 30 }, { "name": "Kyle", "age": 31 }]|]
+
+rmDups :: Eq a => [a] -> [a]
+rmDups = foldr (\x xs -> if x `elem` xs then xs else x : xs) []
