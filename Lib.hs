@@ -8,11 +8,11 @@ import System.Random
 
 main :: IO ()
 main = do
-  xs <- replicateM 50 (randomRIO (0, 50) :: IO Int)
-  ys <- replicateM 50 (randomRIO (0, 50) :: IO Int)
+  xs <- replicateM 30 (randomRIO (0, 50) :: IO Int)
+  ys <- replicateM 30 (randomRIO (0, 50) :: IO Int)
   let ps = zip xs ys
   let (xs', ys') = unzip $ convexHull ps
-  onscreen $ scatter xs ys  % plot xs' ys'
+  onscreen $ scatter xs ys % plot xs' ys'
   return ()
 
 mean :: (Fractional a1, Integral a2, Foldable t) => t a2 -> a1
@@ -55,3 +55,15 @@ convexHull xs = lower ++ upper
       else go (x : acc) xs
   go acc (x : xs) = go (x : acc) xs
   go acc [] = reverse acc --reverse is not imp, but it makes cw hull (instead of ccw) due to appending x at head instead of tail
+
+splitLines :: [Char] -> [[Char]]
+splitLines [] = []
+splitLines xs =
+  let (pre, suf) = break isLineTerminator xs
+   in pre : case suf of
+        ('\r' : '\n' : rest) -> splitLines rest
+        ('\r' : rest) -> splitLines rest
+        ('\n' : rest) -> splitLines rest
+        _ -> []
+ where
+  isLineTerminator c = c == '\r' || c == '\n'
