@@ -17,8 +17,8 @@ cabal-version:       >=1.10
 
 executable algo
   main-is:             Main.hs
-  other-modules:       Lib
+  other-modules:       Lib, File
   -- other-extensions:
-  build-depends:       base >=4.12 && <4.13, raw-strings-qq, matplotlib, random
+  build-depends:       base >=4.12 && <4.13, raw-strings-qq, matplotlib, random, filepath, directory, data-memocombinators
   -- hs-source-dirs:
   default-language:    Haskell2010

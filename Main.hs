@@ -4,10 +4,12 @@
 
 module Main where
 
+import Data.Function (fix)
 import Data.List (elemIndex, foldl')
 import Data.Maybe (isJust)
+import qualified Data.MemoCombinators as Memo
+import qualified Lib
 import Text.RawString.QQ (r)
-import qualified Lib 
 
 main :: IO ()
 main = Lib.main
@@ -189,7 +191,29 @@ isBalanced = null . foldl' op []
     | x `elem` "()[]{}" = x : xs
     | otherwise = xs
 
+str :: [Char]
 str = [r| [{ "name": "John", "age": 30 }, { "name": "Kyle", "age": 31 }]|]
 
 rmDups :: Eq a => [a] -> [a]
 rmDups = foldr (\x xs -> if x `elem` xs then xs else x : xs) []
+
+memoize :: (Int -> Integer) -> (Int -> Integer)
+memoize f = (map f [0 ..] !!)
+
+rodCut :: [Integer] -> Int -> Integer
+rodCut ps = fix (memoize . rodCut')
+ where
+  rodCut' f 0 = 0
+  rodCut' f n = maximum [ps !! (i -1) + f (n - i) | i <- [1 .. n]]
+
+fib1 n
+  | n < 2 = n
+  | otherwise = fib1 (n -1) + fib1 (n -2)
+
+fib2 = 0 : 1 : zipWith (+) fib2 (tail fib2)
+
+fib3 = fix (memoize . fib)
+ where
+  fib f 0 = 0
+  fib f 1 = 1
+  fib f n = f (n -1) + f (n -2)
