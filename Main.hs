@@ -6,8 +6,9 @@ module Main where
 
 import Data.Function (fix)
 import Data.List (elemIndex, foldl')
-import Data.Maybe (isJust)
+import Data.Maybe (fromJust, isJust)
 import qualified Data.MemoCombinators as Memo
+import Debug.Trace (trace)
 import qualified Lib
 import Text.RawString.QQ (r)
 
@@ -197,8 +198,11 @@ str = [r| [{ "name": "John", "age": 30 }, { "name": "Kyle", "age": 31 }]|]
 rmDups :: Eq a => [a] -> [a]
 rmDups = foldr (\x xs -> if x `elem` xs then xs else x : xs) []
 
-memoize :: (Int -> Integer) -> (Int -> Integer)
+memoize :: (Int -> a) -> (Int -> a)
 memoize f = (map f [0 ..] !!)
+
+rodCut' ps 0 = 0
+rodCut' ps n = let x = maximum [ps !! (i -1) + rodCut' ps (n - i) | i <- [1 .. n]] in trace (show x) x
 
 rodCut :: [Integer] -> Int -> Integer
 rodCut ps = fix (memoize . rodCut')
@@ -206,12 +210,35 @@ rodCut ps = fix (memoize . rodCut')
   rodCut' f 0 = 0
   rodCut' f n = maximum [ps !! (i -1) + f (n - i) | i <- [1 .. n]]
 
+rodCutWithSol :: [Integer] -> Int -> Integer
+rodCutWithSol ps n = let x = rodCut ps n in trace (let res = reverse $ subSetSum ps' x in show (map (fromJust . flip elemIndex ps') res) ++ "\n" ++ show res) x
+ where
+  ps' = take n ps
+
+(+++) :: [a] -> [a] -> [a]
+(+++) _ xs@(_ : _) = xs
+(+++) xs@(_ : _) _ = xs
+(+++) _ _ = []
+
+subSetSum :: (Ord t, Num t) => [t] -> t -> [t]
+subSetSum xs n = subSetSum' xs n [] 0
+ where
+  subSetSum' input target result acc
+    | acc == target = result
+    | null input || acc > target = []
+    | otherwise = (if x <= 0 then [] else subSetSum' input target (x : result) (x + acc)) +++ subSetSum' xs target result acc
+   where
+    (x : xs) = input
+
+fib1 :: (Ord a, Num a) => a -> a
 fib1 n
   | n < 2 = n
   | otherwise = fib1 (n -1) + fib1 (n -2)
 
+fib2 :: [Integer]
 fib2 = 0 : 1 : zipWith (+) fib2 (tail fib2)
 
+fib3 :: Int -> Integer
 fib3 = fix (memoize . fib)
  where
   fib f 0 = 0
