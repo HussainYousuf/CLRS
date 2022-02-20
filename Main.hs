@@ -5,15 +5,16 @@
 module Main where
 
 import Data.Function (fix)
-import Data.List (elemIndex, foldl')
+import Data.List (elemIndex, foldl', maximumBy)
 import Data.Maybe (fromJust, isJust)
 import qualified Data.MemoCombinators as Memo
+import Data.Ord (comparing)
 import Debug.Trace (trace)
 import qualified Lib
 import Text.RawString.QQ (r)
 
 main :: IO ()
-main = Lib.main
+main = return ()
 
 -- insertionSort
 insertionSort :: Ord a => [a] -> [a]
@@ -244,3 +245,18 @@ fib3 = fix (memoize . fib)
   fib f 0 = 0
   fib f 1 = 1
   fib f n = f (n -1) + f (n -2)
+
+longest :: Ord a => [[a]] -> [a]
+longest = maximumBy (comparing length)
+
+lcs :: [Char] -> [Char] -> [Char]
+lcs = Memo.memo2 (Memo.list Memo.char) (Memo.list Memo.char) lcs'
+ where
+  lcs' [] _ = []
+  lcs' _ [] = []
+  lcs' xxs yys
+    | x == y = x : lcs xs ys
+    | otherwise = longest [lcs xs yys, lcs xxs ys]
+   where
+    (x : xs) = xxs
+    (y : ys) = yys
