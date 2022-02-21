@@ -249,6 +249,7 @@ fib3 = fix (memoize . fib)
 longest :: Ord a => [[a]] -> [a]
 longest = maximumBy (comparing length)
 
+-- longest common subsequence
 lcs :: [Char] -> [Char] -> [Char]
 lcs = Memo.memo2 (Memo.list Memo.char) (Memo.list Memo.char) lcs'
  where
@@ -260,3 +261,7 @@ lcs = Memo.memo2 (Memo.list Memo.char) (Memo.list Memo.char) lcs'
    where
     (x : xs) = xxs
     (y : ys) = yys
+
+-- longest palindrome subsequence
+lps :: [Char] -> [Char]
+lps xs = lcs xs $ reverse xs
