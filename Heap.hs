@@ -1,3 +1,5 @@
+module Heap where
+
 class Heap heap where
     {-# MINIMAL
         isEmpty

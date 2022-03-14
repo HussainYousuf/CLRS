@@ -1,4 +1,4 @@
-{-# LANGUAGE QuasiQuotes #-}
+-- {-# LANGUAGE QuasiQuotes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeFamilies #-}
 
@@ -103,8 +103,8 @@ isBalanced = null . foldl' op []
     | x `elem` "()[]{}" = x : xs
     | otherwise = xs
 
-str :: [Char]
-str = [r| [{ "name": "John", "age": 30 }, { "name": "Kyle", "age": 31 }]|]
+-- str :: [Char]
+-- str = [r| [{ "name": "John", "age": 30 }, { "name": "Kyle", "age": 31 }]|]
 
 rmDups :: Eq a => [a] -> [a]
 rmDups = foldr (\x xs -> if x `elem` xs then xs else x : xs) []
@@ -196,8 +196,8 @@ uncons (x : xs) = Just (x, xs)
 wrap :: a -> [a]
 wrap = (: [])
 
-unwrap :: [a] -> a
-unwrap [x] = x
+-- unwrap :: [a] -> a
+-- unwrap [x] = x
 
 single :: [a] -> Bool
 single [x] = True
@@ -209,3 +209,34 @@ integer = foldl' (\a x -> a * 10 + x) 0
 fraction :: Fractional a => [a] -> a
 fraction = foldr (\x a -> a / 10 + x) 0
 
+-- quickSort :: Ord a => [a] -> [a]
+-- quickSort [] = []
+-- quickSort (x:xs) = quickSort smaller ++ [x] ++ quickSort larger
+--   where
+--     smaller = filter (<=x) xs
+--     larger = filter (>x) xs
+
+-- type Node = Int
+-- type Edge b = [(b, Node)]
+-- type Context a b = (Edge b, Node, a, Edge b)
+-- data Graph a b = Context a b & Graph | Empty
+
+fibfast n = fib' 0 1 n
+ where
+  fib' a b n
+    | n == 0 = a
+    | otherwise = fib' b (a + b) (n -1)
+
+-- Osaki Purely Functional DataStructures
+suffixes :: [a] -> [[a]]
+suffixes [] = []
+suffixes xxs@(_ : xs) = xxs : suffixes xs
+
+data Tree a = Node a (Tree a) (Tree a) | Empty
+
+insert :: Ord a => a -> Tree a -> Tree a
+insert x Empty =  Node x Empty Empty
+insert x tree@(Node a left right)
+  | x < a = Node a (insert x left) right
+  | x > a = Node a left (insert x right) 
+  | otherwise = tree
