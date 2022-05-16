@@ -16,7 +16,7 @@ extra-source-files:  CHANGELOG.md
 cabal-version:       >=1.10
 
 executable algo
-  main-is:             Main.hs
+  main-is:             AlgorithmDesignWithHaskell.hs
   -- other-modules:       Lib
   -- other-extensions:
   build-depends:       base >=4.12 && <4.13, raw-strings-qq, matplotlib, random, filepath, directory, data-memocombinators, array, containers
